@@ -3,9 +3,6 @@
     <title>Traffic Cam Photobooth</title> <!-- ˜60 chars -->
     <!-- HTML Meta Tags -->
     <meta name="description" content="Take selfies with traffic cameras!">
-    <link rel="alternate" href="https://trafficcamphotobooth.com/es/index.html" hreflang="es" />
-    <link rel="alternate" href="https://trafficcamphotobooth.com/ca/index.html" hreflang="ca" />
-    <link rel="alternate" href="https://trafficcamphotobooth.com/index.html" hreflang="x-default" />
 
     <!-- Facebook Meta Tags -->
     <meta property="og:url" content="https://trafficcamphotobooth.com">
@@ -30,14 +27,7 @@
       //pls do not spam I just want to know how many ppl use my site
       //you can view the source code at https://github.com/we-make-internet/home-page/blob/main/www/diyPixel/trafficCamPixel.php
       fetch('https://wemakeinter.net/diyPixel/trafficCamPixel.php?event=pageView')
-      document.addEventListener('DOMContentLoaded', function() {
-        const userLang = navigator.language || navigator.userLanguage;
-        if (userLang.startsWith('es')) {
-          window.location.href = './es/index.html';
-        } else if (userLang.startsWith('ca')) {
-          window.location.href = './ca/index.html';
-        }
-      });
+
     </script>
     <meta name="htmx-config" content='{"selfRequestsOnly":false}'> 
     <style>
@@ -71,23 +61,23 @@
     </style>
   </head>
   <body>
-      <div class="main" id="main">
-        <h1>Welcome to Traffic Cam Photobooth</h1>
-        <p><i>Take selfies with surveillance!<br/><br/>A project by <a href="https://rogergmarch-cv.pages.dev/">Roger G. March</a> based on <a href="https://wttdotm.com">WTTDOTM</a></i></p>
-        <p><i><a href="./about.html">About Page</a></i></p>
-        <p><i><a href="./press.html">Press Links</a></i></p>
-        <br/>
-        <p class="notOnDesktop">Get started by finding your <br/><b>📸 <a href="./findCamera.html">nearest camera</a> 📸</b><br/>or browse the <br/>🧭 <b><a href="./map.html">camera map</a></b> 🧭</p>
-        <div class="onDesktop">
-          <b>It looks like you might be on desktop, which we did not design it because we do not want you to bring your laptop into traffic :(
-            <br/>
-            <br/>
-            You can browse the <a href="./map.html?onDesktop=yes">Camera Map</a> in the meantime!</b><br/>
-            Come back when you're outside :)
-        </div>
+    <div class="main" id="main">
+      <h1>Benvingut a Traffic Cam Photobooth</h1>
+      <p><i>Fes-te selfies amb la vigilància!<br/><br/>Un projecte de <a href="https://rogergmarch-cv.pages.dev/">Roger G. March</a> basat en <a href="https://wttdotm.com">WTTDOTM</a></i></p>
+      <p><i><a href="./about.html">Pàgina Sobre el Projecte</a></i></p>
+      <p><i><a href="./press.html">Enllaços de Premsa</a></i></p>
+      <br/>
+      <p class="notOnDesktop">Comença trobant la teva <br/><b>📸 <a href="./findCamera.html">càmera més propera</a> 📸</b><br/>o explora el <br/>🧭 <b><a href="./map.html">mapa de càmeres</a></b> 🧭</p>
+      <div class="onDesktop">
+          <b>Sembla que estàs utilitzant un ordinador, per al qual no ho hem dissenyat perquè no volem que portis el teu portàtil al trànsit :(
+          <br/>
+          <br/>
+          Mentrestant, pots explorar el <a href="./map.html?onDesktop=yes">Mapa de Càmeres</a>!</b><br/>
+          Torna quan estiguis fora :)
+      </div>
       <br/>
       <br/>
-        <p>Know how to code?<br/><a href="https://github.com/wttdotm/traffic_cam_photobooth">Add your city!</a></p>
-    </div>
+      <p>Saps programar?<br/><a href="https://github.com/wttdotm/traffic_cam_photobooth">Afegeix la teva ciutat!</a></p>
+  </div>
   </body>
 </html>

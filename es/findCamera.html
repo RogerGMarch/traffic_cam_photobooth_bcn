@@ -1,20 +1,10 @@
 <html>
   <head>
-    <title>Map of Catalonia cameras</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <style>
-        #map { 
-            height: 100vh; 
-            width: 100vw;
-        }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
+    <title>Find your nearest camera</title>
+    <link rel="stylesheet" href="styles.css"></style>
     <script>
-        let allCameras = 
-        {
+        console.log("hiiiii")
+        let allCameras = {
             "type": "FeatureCollection",
             "message": "OK",
             "features": [
@@ -2395,110 +2385,155 @@
                     }
                 }
             ],
-            "status": 200
         };
 
+        const getRelativeDistance = (userCoords, cameraCoords) => {
+            return Math.pow((userCoords.latitude - cameraCoords.latitude), 2) + 
+                   Math.pow((userCoords.longitude - cameraCoords.longitude), 2);
+        };
 
-        const queryString = window.location.search;
-        console.log(queryString);
-        const urlParams = new URLSearchParams(queryString);
-        let onDesktop = urlParams.get('onDesktop')
-        console.log("onDesktop value", onDesktop)
+        let currentCamera = 0;
+        let closestCameras = [];
+
+        const updateAllInfo = (nearestCamera) => {
+            document.getElementById("cameraName").innerHTML = nearestCamera.camera.properties.municipi;
+            document.getElementById("cameraImage").src = `${nearestCamera.camera.properties.link}?cacheAvoidance=${Math.floor(Math.random() * 100000)}`;
+            document.getElementById("cameraLink").href = `./interstitial.html?cameraId=${nearestCamera.camera.properties.gml_id}&cameraUrl=${encodeURIComponent(nearestCamera.camera.properties.link)}`;
+            document.getElementById("mapsLink").href = `https://www.google.com/maps/search/?api=1&query=${nearestCamera.camera.geometry.coordinates[1]}%2C${nearestCamera.camera.geometry.coordinates[0]}`;
+            document.getElementById("result").style.display = "block";
+        };
+
+        const findNearestCamera = (userCoords) => {
+            document.getElementById('mainHeaderText').innerHTML = "Searching... one sec :)";
+            console.log("in nearest camera");
+
+            allCameras.features.sort((cameraA, cameraB) => {
+                const cameraACoords = {
+                    latitude: cameraA.geometry.coordinates[1],
+                    longitude: cameraA.geometry.coordinates[0]
+                };
+                const cameraBCoords = {
+                    latitude: cameraB.geometry.coordinates[1],
+                    longitude: cameraB.geometry.coordinates[0]
+                };
+
+                return getRelativeDistance(userCoords, cameraACoords) - getRelativeDistance(userCoords, cameraBCoords);
+            });
+
+            console.log("past sort");
+
+            closestCameras = allCameras.features.map(cam => { 
+                return {"camera": cam, relativeDistance: 1000};
+            });
+
+            console.log("past map");
+
+            document.getElementById("buttonAsk").style.display = "none";
+            updateAllInfo(closestCameras[currentCamera]);
+        };
 
         const getUserLocation = () => {
-            document.getElementById("button").innerHTML = ''
-            document.getElementById("button").style.background = `url('./loadingGifEf.gif'), #efefef`
-            document.getElementById("button").style.backgroundPosition = `center`
-            document.getElementById("button").style.backgroundRepeat = `no-repeat`
+            console.log("in get user location");
+            document.getElementById("button").innerHTML = '';
+            document.getElementById("button").style.background = `url('./loadingGifEf.gif'), #efefef`;
+            document.getElementById("button").style.backgroundPosition = `center`;
+            document.getElementById("button").style.backgroundRepeat = `no-repeat`;
+
             navigator.geolocation.getCurrentPosition((position) => {
+                let userCoords = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
 
-                    //clear the button
-                    
+                findNearestCamera(userCoords);
+            }, (error) => {
+                document.getElementById("buttonAsk").style.display = 'none';
+                document.getElementById("result").style.display = 'none';
+                document.getElementById("errorDiv").style.display = 'block';
+            }, { timeout: 10000, maximumAge: 60000 });
+        };
 
-                    // background: url('./loadingGif.gif');
-            // background-position: center;
-            // background-repeat: no-repeat
-                    //do the actual stuff
-                    console.log(position.coords.latitude, position.coords.longitude);
-                    let userCoords = {}
-                    userCoords.latitude = position.coords.latitude
-                    userCoords.longitude = position.coords.longitude
+        const refreshImage = () => {
+            updateAllInfo(closestCameras[currentCamera]);
+        };
 
-                    findNearestCamera(userCoords)
-            },(error) => {
-                document.getElementById("buttonAsk").style.display = 'none'
-                document.getElementById("result").style.display = 'none'
-                document.getElementById("errorDiv").style.display = 'block'
-                //maybe I should add a big ol list here lmao
-                // alert("Geolocation Error\nYou probably have location turned off for your browser (a reasonable thing to do). Here are your options:\n(1) Turn on location in Settings > Location > [Your Browser]\n(2) Find a QR sticker near one in the wild and scan it (3) Close this popup and check out The Big List", error);
-            },
-            { timeout: 10000, maximumAge: 60000 }
-            );
-        }
+        const getNextClosestCamera = () => {
+            currentCamera++;
+            if (currentCamera >= closestCameras.length) {
+                currentCamera = 0;  // Loop back to the first camera if we run out of options
+            }
+            updateAllInfo(closestCameras[currentCamera]);
+        };
     </script>
     <style>
-        #map { 
-            height: 100vh; 
-            width: 100vw}
-        
+        #result {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        #buttonAsk {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #button {
+            min-width: 50vw;
+            height: 10vh;
+            background-color: #efefef;
+            padding : 20px;
+            font-size: 3em;
+            padding: 10px;
+            border-radius: 20px;
+        }
+/*             background: url('./loadingGif.gif');
+            background-position: center;
+            background-repeat: no-repeat; */
+        #buttonDiv {
+            min-width: 0vw;
+            min-height: 10vh;
+            font-size:xx-large;
+            border-radius: 20px;
+            background-color: grey;
+        }
+
+        img {
+            width: 100%;
+            max-height: 40vh;
+        }
+        #errorDiv {
+            display: none;
+            text-align: left;
+            padding: 5vw
+        }
     </style>
   </head>
   <body>
-    <div id="map"></div>
-    <script>
-        var map = L.map('map').setView([41.3851, 2.1734], 12);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-        var myIcon = L.icon({
-            iconUrl: 'cameraIcon.png',
-            // iconSize: [38, 95],
-            iconAnchor: [22, 94],
-            popupAnchor: [-3, -76],
-            // shadowUrl: 'my-icon-shadow.png',
-            // shadowSize: [68, 95],
-            // shadowAnchor: [22, 94]
-        });
-        class CameraLocation {
-            constructor(lat, long, name, id, imageUrl) {
-                this.lat = lat;
-                this.long = long;
-                this.name = name;
-                this.id = id;
-                this.imageUrl = imageUrl;
-                this.marker = L.marker([this.lat, this.long], {icon : myIcon})
-                    .bindPopup(`<h2>Camera Name:<br/>${this.name}</h2>
-                    <img style="max-width: 100%" id='${this.name}' src='${this.imageUrl}'> 
-                    ${onDesktop === 'yes' ? '' : "<h2><a href='./interstitial.html?cameraId=" + this.id + "&cameraUrl=" + this.imageUrl + "'>Take Picture Here</a></h2>"}
-                    <h2><a href='https://www.google.com/maps/search/?api=1&query=${this.lat}%2C${this.long}'>Find in Google Maps (not always super accurate)</a></h2>
-                    <!-- <h2><a href='#' onclick='() => {document.getElementById("${this.name}").src="${this.imageUrl}?cacheAvoidance=${this.cacheAvoidanceNum()}"}'>Refresh Image</a></h2>
-                    // <button id='button_${this.id}' onclick='updateImage(${this.name})'>Refresh Image</button> -->`).addTo(map)
-            }
-            cacheAvoidanceNum = () => {
-                console.log("in achaec avoideance")
-                return Math.floor(Math.random() * 100000)
-            }
-        }
-
-            allCameras.features.forEach(camera => {
-        let lat = camera.geometry.coordinates[1];
-        let long = camera.geometry.coordinates[0];
-        let name = camera.properties.municipi;
-        let id = camera.properties.gml_id;
-        let imageUrl = camera.properties.link;
-
-        let newCamera = new CameraLocation(lat, long, name, id, imageUrl);
-    });
-
-        // THE PROBLEM HERE IS PROBABLY JUST THE DASHES IN THE ID STRING
-        const updateImage = (imageDivId) => {
-            console.log("hiiii in upateImage")
-            // document.getElementById(imageDivId).src = `https://webcams.nyctmc.org/api/cameras/${imageDivId}/image?cacheAvoidance=${Math.floor(Math.random() * 100000)}`
-        } 
-        allCameras.forEach(camera => {
-            let newCamera = new CameraLocation(camera.latitude, camera.longitude, camera.name, camera.id, camera.imageUrl)
-        })
-    </script>
+    <div class="main" id="main">
+        <div id="buttonAsk">
+            <h1 id="mainHeaderText">Click the button to find your nearest camera!</h1>
+            <button id="button" onclick="getUserLocation()">🧐🔎📸</button>
+            <!-- <div id="buttonDiv" onclick="getUserLocation()">🧐🔎📸</div> -->
+        </div>
+        <div id="result">
+            <h1>Your nearest camera is "<span id="cameraName"></span>"</h1>
+            <img id="cameraImage" src="./holderLoading.gif">
+            <br/>
+            <h2><a href="#" onclick='refreshImage()' id="refreshLink">Refresh Image</a><br/><span style="font-size: small;">(most update every 2s)</span></h2>
+            <h2><a href="#" onclick='getNextClosestCamera()' id="nextClosestCameraLink">Next Closest Camera</a><br/><span style="font-size: small;">(refresh to go back to beginning)</span></h2>
+            <h2><a href='' id="mapsLink">Find in Google Maps</a><br/><span style="font-size: small;">(close but not always super accurate,<br/>trust the street names more)</span></h2>
+            <h2><a href="" id="cameraLink">I'm ready!</a></h2>
+        </div>
+        <div id="errorDiv">
+            <h1>Geolocation Error</h1>
+            <p>You probably have location services turned off on your phone, or don't want to share your location (reasonable tbh). To use the site without GPS, you have two options:</p>
+            <ul>
+                <li>Find a camera manually by going to the <a href="./map.html">Map</a> or the <a href="./listPage.html">List Page</a></li>
+                <li>Turn on location in Settings > Location > [Your Browser] and reload this page</li>
+            </ul>
+        </div>
+    </div>
   </body>
 </html>

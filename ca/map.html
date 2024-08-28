@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Map of Catalonia cameras</title>
+    <title>Mapa de càmeres de Catalunya</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <style>
@@ -2467,14 +2467,16 @@
                 this.name = name;
                 this.id = id;
                 this.imageUrl = imageUrl;
-                this.marker = L.marker([this.lat, this.long], {icon : myIcon})
-                    .bindPopup(`<h2>Camera Name:<br/>${this.name}</h2>
+                this.marker = L.marker([this.lat, this.long], {icon: myIcon})
+                .bindPopup(`
+                    <h2>Nom de la Càmera:<br/>${this.name}</h2>
                     <img style="max-width: 100%" id='${this.name}' src='${this.imageUrl}'> 
-                    ${onDesktop === 'yes' ? '' : "<h2><a href='./interstitial.html?cameraId=" + this.id + "&cameraUrl=" + this.imageUrl + "'>Take Picture Here</a></h2>"}
-                    <h2><a href='https://www.google.com/maps/search/?api=1&query=${this.lat}%2C${this.long}'>Find in Google Maps (not always super accurate)</a></h2>
-                    <!-- <h2><a href='#' onclick='() => {document.getElementById("${this.name}").src="${this.imageUrl}?cacheAvoidance=${this.cacheAvoidanceNum()}"}'>Refresh Image</a></h2>
-                    // <button id='button_${this.id}' onclick='updateImage(${this.name})'>Refresh Image</button> -->`).addTo(map)
-            }
+                    ${onDesktop === 'yes' ? '' : "<h2><a href='./interstitial.html?cameraId=" + this.id + "&cameraUrl=" + this.imageUrl + "'>Fes una Foto Aquí</a></h2>"}
+                    <h2><a href='https://www.google.com/maps/search/?api=1&query=${this.lat}%2C${this.long}'>Troba-ho a Google Maps (no sempre és molt precís)</a></h2>
+                    <!-- <h2><a href='#' onclick='() => {document.getElementById("${this.name}").src="${this.imageUrl}?cacheAvoidance=${this.cacheAvoidanceNum()}"}'>Actualitza Imatge</a></h2>
+                    // <button id='button_${this.id}' onclick='updateImage(${this.name})'>Actualitza Imatge</button> -->`
+                ).addTo(map);
+                    }
             cacheAvoidanceNum = () => {
                 console.log("in achaec avoideance")
                 return Math.floor(Math.random() * 100000)
