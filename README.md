@@ -1,13 +1,5 @@
-# Repo for TrafficCamPhotobooth.com
+# Repo for Traffic-Cam-Photobooth-bcn.pages.dev
 
-## Press coverage for TrafficCamPhotobooth.com
-- [NBC](https://www.nbcnewyork.com/news/local/how-to-take-selfies-with-new-york-citys-traffic-cameras/5698806/)
-- [NY Post](https://nypost.com/2024/08/11/us-news/new-web-site-lets-nyers-use-traffic-cams-to-turn-streets-into-instant-photo-booths/)
-- [NY1](https://ny1.com/nyc/all-boroughs/mornings-on-1/2024/08/13/brooklyn-artist-uses-traffic-cameras-for-unique-selfies-across-nyc)
-- [Fox 5 NY](https://www.fox5ny.com/news/nyc-traffic-cam-photobooth-selfie)
-- [ABC](https://abc7ny.com/videoClip/fire-commissioner-fdny-robert-tucker-nyc/15178890/) (starts at ~17min)
-- [Jalopnik](https://jalopnik.com/art-project-turns-new-yorks-dystopian-traffic-surveilla-1851619333)
-- [PetaPixel](https://petapixel.com/2024/08/12/website-turns-traffic-cameras-into-photobooths-on-the-street/)
 
 ## Contributing:
 I'm happy to accept PRs for this project, here are some basic guidelines for doing so.
